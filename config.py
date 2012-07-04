@@ -1,5 +1,8 @@
 number_of_tiles = 90
 
+number_of_rows = 16
+number_of_columns = 16
+
 points_map = {
     'A':1,
     'B':4,

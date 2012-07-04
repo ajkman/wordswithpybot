@@ -21,3 +21,9 @@ class GameSpace(object):
 
     def occupied(self):
         return self._tile is not None
+
+    def __str__(self):
+        if self.occupied():
+            return str(self._tile)
+        else:
+            return "_"

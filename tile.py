@@ -13,3 +13,6 @@ class Tile(object):
 
     def set_letter(self, letter):
         self._letter = letter
+
+    def __str__(self):
+        return self._letter
