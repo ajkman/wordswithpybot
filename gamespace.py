@@ -27,3 +27,6 @@ class GameSpace(object):
             return str(self._tile)
         else:
             return "_"
+
+    def __repr__(self):
+        return self.__str__()

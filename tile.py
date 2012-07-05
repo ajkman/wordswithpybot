@@ -16,3 +16,7 @@ class Tile(object):
 
     def __str__(self):
         return self._letter
+
+    def __repr__(self):
+        return "<tile.Tile object: '{0}'>".format(self.get_letter())
+
