@@ -14,4 +14,3 @@ class WordList(object):
     def regex_search(self, pattern):
         regex = re.compile(pattern)
         return [w for w in self._words if regex.search(w) is not None]
-
