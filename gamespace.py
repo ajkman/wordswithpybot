@@ -16,6 +16,9 @@ class GameSpace(object):
     def get_global_modifier(self):
         return self._global_modifier
 
+    def get_tile(self):
+        return self._tile
+
     def set_tile(self, tile):
         self._tile = tile
 
