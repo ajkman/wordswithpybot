@@ -9,8 +9,8 @@ tiles = [
     Tile('T'),
     ]
 
-xpos = [0, 1, 2]
-ypos = [0, 0, 1]
+xpos = [7, 7, 7]
+ypos = [7, 8, 9]
 
 for t, i, j in zip(tiles, xpos, ypos):
     g.add_tile_to_move(t, i, j)
@@ -18,3 +18,9 @@ for t, i, j in zip(tiles, xpos, ypos):
 result = g.validate_current_move()
 if result == GameBoard.INVALID_PLACEMENT:
     print 'Invalid tile placement'
+elif result == GameBoard.INVALID_WORD:
+    print 'Invalid word:'
+    print g.get_invalid_words()
+elif result == GameBoard.VALID_MOVE:
+    print 'Valid move'
+

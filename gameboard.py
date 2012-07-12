@@ -1,5 +1,6 @@
 import config
 import gamespace
+import wordlist
 
 class GameBoard(object):
     VALID_MOVE = 1
@@ -9,6 +10,8 @@ class GameBoard(object):
     def __init__(self):
         self._current_move = {}
         self._board = []
+        self._wordlist = wordlist.WordList()
+        self._invalid_words = []
         self._playable_spaces = [
             (config.number_of_rows / 2 - 1, config.number_of_columns / 2 - 1)
             ]
@@ -21,48 +24,75 @@ class GameBoard(object):
             
             self._board.append(row)
 
+    def get_invalid_words(self):
+        return self._invalid_words
+
     def add_tile_to_move(self, tile, i, j):
         if not self._board[i][j].occupied():
             self._current_move[(i,j)] = tile
 
     def validate_current_move(self):
         # First check for valid tile placement
-        x_indices, y_indices = zip(*(self._current_move.keys()))
+        y_indices, x_indices = zip(*(self._current_move.keys()))
         rowwise = (len(set(y_indices)) == 1)
         columnwise = (len(set(x_indices)) == 1)
         if not rowwise and not columnwise:
             return self.INVALID_PLACEMENT
-        elif len(set(zip(x_indices,y_indices)).intersection(self._playable_spaces)) == 0:
+        elif len(set(zip(y_indices,x_indices)).intersection(self._playable_spaces)) == 0:
             return self.INVALID_PLACEMENT        
 
         #Build horizontal words
-        words = []
-        for i in range(number_of_rows):
+        hwords = []
+        for i in range(config.number_of_rows):
             word = ""
-            for j in range(number_of_columns):
+            new_word = False
+            for j in range(config.number_of_columns):
                 gamespace = self._board[i][j]
-                if not gamespace.occupied() and word != "":
-                    words.append(word)
+                if (i, j) in self._current_move:
+                    word += self._current_move[(i,j)].get_letter()
+                    new_word = True
+                elif not gamespace.occupied() and word != "":
+                    if new_word:
+                        hwords.append(word.lower())
+
                     word = ""
+                    new_word = False
                 elif gamespace.occupied():
                     word += gamespace.get_tile().get_letter()
-                elif (i, j) in self._current_move:
-                    word += self._current_move[(i,j)].get_letter()
 
         #Build vertical words
-        for j in range(number_of_columns):
+        vwords = []
+        for j in range(config.number_of_columns):
             word = ""
-            for i in range(number_of_rows):
+            new_word = False
+            for i in range(config.number_of_rows):
                 gamespace = self._board[i][j]
-                if not gamespace.occupied() and word != "":
-                    words.append(word)
+                if (i, j) in self._current_move:
+                    word += self._current_move[(i,j)].get_letter()
+                    new_word = True
+                elif not gamespace.occupied() and word != "":
+                    if new_word:
+                        vwords.append(word)
+
                     word = ""
+                    new_word = False
                 elif gamespace.occupied():
                     word += gamespace.get_tile().get_letter()
-                elif (i, j) in self._current_move:
-                    word += self._current_move[(i,j)].get_letter()
 
         #Check words
+        print "hwords: ", hwords
+        print "vwords: ", vwords
+        if (rowwise and len(hwords) > 1) or (columnwise and len(vwords) > 1):
+            return self.INVALID_PLACEMENT
+        
+        words = hwords + vwords
+        self._invalid_words = [
+            w for w in words if not self._wordlist.check_word(w)
+            ]
+        if len(self._invalid_words) > 0:
+            return self.INVALID_WORD
+
+        return self.VALID_MOVE
 
     def find_playable_spaces(self):
         self._playable_spaces = set()
