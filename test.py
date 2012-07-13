@@ -3,16 +3,14 @@ from tile import Tile
 
 g = GameBoard()
 
-tiles = [
-    Tile('C'),
-    Tile('A'),
-    Tile('T'),
-    ]
+word = 'QUANTUM'
 
-xpos = [7, 7, 7]
-ypos = [7, 8, 9]
+tiles = [Tile(x) for x in word]
 
-for t, i, j in zip(tiles, xpos, ypos):
+row = [6 + i for i in range(len(word))]
+col = [7 for i in range(len(word))]
+
+for t, i, j in zip(tiles, row, col):
     g.add_tile_to_move(t, i, j)
 
 result = g.validate_current_move()
@@ -23,4 +21,5 @@ elif result == GameBoard.INVALID_WORD:
     print g.get_invalid_words()
 elif result == GameBoard.VALID_MOVE:
     print 'Valid move'
+    print 'score: ', g.get_score()
 
