@@ -17,10 +17,31 @@ class GameBoard(object):
             (config.number_of_rows / 2 - 1, config.number_of_columns / 2 - 1)
             ]
 
-        for i in range(config.number_of_rows):
+        nrow = config.number_of_rows
+        ncol = config.number_of_columns
+        for i in range(nrow):
             row = []
-            for j in range(config.number_of_columns):
+            for j in range(ncol):
                 space = gamespace.GameSpace()
+                # Set modifiers on gameboard
+                loc_list = [
+                    (i, j),
+                    (i, ncol - 1 - j),
+                    (nrow - 1 - i, j),
+                    (nrow - 1 - i, ncol - 1 - j)
+                    ]
+                modifier = [config.modifiers[l] for l in loc_list if l in config.modifiers]
+                if len(modifier) > 0:
+                    modifier = modifier[0]
+                    if modifier == config.TL:
+                        space.set_local_modifier(3)
+                    elif modifier == config.TW:
+                        space.set_global_modifier(3)
+                    elif modifier == config.DL:
+                        space.set_local_modifier(2)
+                    elif modifier == config.DW:
+                        space.set_global_modifier(2)
+
                 row.append(space)
 
             self._board.append(row)

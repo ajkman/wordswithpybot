@@ -2,6 +2,7 @@ from gameboard import GameBoard
 from tile import Tile
 
 g = GameBoard()
+print g
 
 word = 'QUANTUM'
 

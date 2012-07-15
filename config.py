@@ -64,3 +64,27 @@ points_map = {
 }
 
 wordfile = 'data/wordlist.txt'
+
+TW = 1
+DW = 2
+TL = 3
+DL = 4
+
+modifiers = {
+    (0, 3): TW,
+    (0, 6): TL,
+    (1, 2): DL,
+    (1, 5): DW,
+    (2, 1): DL,
+    (2, 4): DL,
+    (3, 0): TW,
+    (3, 3): TL,
+    (3, 7): DW,
+    (4, 2): DL,
+    (4, 6): DL,
+    (5, 1): DW,
+    (5, 5): TL,
+    (6, 0): TL,
+    (6, 4): DL,
+    (7, 3): DW,
+}
