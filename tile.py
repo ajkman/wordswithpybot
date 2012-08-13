@@ -2,7 +2,7 @@ from config import points_map
 
 class Tile(object):
     def __init__(self, letter='BLANK'):
-        self._letter = letter
+        self._letter = letter.upper()
         self._points = points_map[self._letter]
 
     def get_letter(self):

@@ -144,6 +144,12 @@ class GameBoard(object):
 
         return self.VALID_MOVE
 
+    def finalize_move(self):
+        for (i, j), tile in self._current_move.iteritems():
+            self._board[i][j].set_tile(tile)
+
+        self._current_move = []
+
     def get_score(self):
         return self._score
 
@@ -151,13 +157,65 @@ class GameBoard(object):
         self._playable_spaces = set()
         for i in range(config.number_of_rows):
             for j in range(config.number_of_columns):
-                if self._board[i][j].occupied:
+                if self._board[i][j].occupied():
                     continue
-                if ((i > 0 and self._board[i - 1][j].occupied) or
-                    (j > 0 and self._board[i][j - 1].occupied) or
-                    (i < number_of_rows - 1 and self._board[i + 1][j].occupied) or
-                    (j < number_of_rows - 1 and self._board[i][j + 1].occupied)):
+                if ((i > 0 and self._board[i - 1][j].occupied()) or
+                    (j > 0 and self._board[i][j - 1].occupied()) or
+                    (i < config.number_of_rows - 1 and self._board[i + 1][j].occupied()) or
+                    (j < config.number_of_rows - 1 and self._board[i][j + 1].occupied())):
                     self._playable_spaces.add((i,j))
+
+    def find_move(self, tilelist):
+        self.find_playable_spaces()
+        letters = set(tile.get_letter() for tile in tilelist)
+        letter_class = "[" + "".join(letters) + "]"
+        for space in self._playable_spaces:
+            horizontal, vertical = self.get_surrounding_letters(space)
+            reg = horizontal[0] + letter_class + horizontal[1]
+            print reg
+            words = self._wordlist.regex_search(reg.lower())
+            reg = vertical[0] + letter_class + vertical[1]
+            print reg
+            words.extend(self._wordlist.regex_search(reg.lower()))
+
+        print len(words)
+
+    def get_surrounding_letters(self, space):
+        row, column = space
+        # Build up horizontal word (minus the current space)
+        preword = ""
+        index = column - 1
+        while index >= 0 and self._board[row][index].occupied():
+            preword = self._board[row][index].get_tile().get_letter() + preword
+            index -= 1
+
+        postword = ""
+        index = column + 1
+        while index < config.number_of_columns and self._board[row][index].occupied():
+            postword += self._board[row][index].get_tile().get_letter()
+            index += 1
+
+        horizontal = (preword, postword)
+
+        preword = ""
+        index = row - 1
+        while index >= 0 and self._board[index][column].occupied():
+            preword = self._board[index][column].get_tile().get_letter() + preword
+            index -= 1
+
+        postword = ""
+        index = row + 1
+        while index < config.number_of_rows and self._board[index][column].occupied():
+            postword += self._board[index][column].get_tile().get_letter()
+            index += 1
+
+        vertical = (preword, postword)
+        return (horizontal, vertical)
+
+
+    def get_playable_spaces(self):
+        self.find_playable_spaces();
+        return self._playable_spaces;
 
     def return_tiles(self):
         tiles = [t[0] for t in self._current_move]

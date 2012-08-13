@@ -2,9 +2,8 @@ from gameboard import GameBoard
 from tile import Tile
 
 g = GameBoard()
-print g
 
-word = 'QUANTUM'
+word = 'cat'
 
 tiles = [Tile(x) for x in word]
 
@@ -23,4 +22,10 @@ elif result == GameBoard.INVALID_WORD:
 elif result == GameBoard.VALID_MOVE:
     print 'Valid move'
     print 'score: ', g.get_score()
+
+g.finalize_move()
+
+word = "baq"
+new_tiles = [Tile(x) for x in word]
+g.find_move(new_tiles)
 
